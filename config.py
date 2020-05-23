@@ -16,7 +16,10 @@ def convert_comma_delim_string_to_list(st):
 def read_config(section, key):
     config = configparser.ConfigParser()
     config.read('./config/invest.ini')
-    return convert_comma_delim_string_to_list(config[section][key])
+    if section == constants.CONFIG_INI_SECTION_INVESTMENT and \
+        key == constants.CONFIG_INI_INVESTMENT_KEY_STOCK_SYMBOLS:
+        return convert_comma_delim_string_to_list(config[section][key])
+    return config[section][key]
 
 
 if __name__ == '__main__':
