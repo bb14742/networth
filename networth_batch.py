@@ -12,19 +12,20 @@ def update_stock_symbols(host, database, user, password):
 
     try:
         db_connection = db.get_db_connection(host, database, user, password)
-        x=1
         print("A database connection was created.")
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        return
 
-    finally:
-        if (db_connection.is_connected()):
+    symbols_list=db.get_symbols(db_connection)
+    print(f'symbols: {symbols_list}')
+    if ('db_connection' in locals()) and (db_connection.is_connected()):
+        #if ('cursor' in locals()):
             #cursor.close()
-            db_connection.close()
-            print("MySQL connection closed gracefully")
+        db_connection.close()
+        print("MySQL connection closed gracefully")
     
     return
-
 
 if __name__ == '__main__':
     with open('./db_creds.txt') as f:

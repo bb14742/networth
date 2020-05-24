@@ -25,16 +25,21 @@ def get_db_connection(db_host, db_db, db_id, db_pw):
         return connection
 
     except mysql.connector.Error as error:
-        print("mysql db connection failed {}".format(error))
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
+        print(f'mysql db connection failed {error}')
+        raise Exception
+    except Exception as error:
+        print(f'Unexpected error: {error}')
         raise
-    '''
-    finally:
-        if (connection.is_connected()):
-            cursor.close()
-            connection.close()
-            print("MySQL connection closed gracefully")
-    '''
+    
 
+def get_symbols(db_connection):
+    cursor = db_connection.cursor(prepared=True)
+    sql_select_query = """ SELECT symbol_nm from invest.symbols"""
+    cursor.execute(sql_select_query)
+    db_result = cursor.fetchall()
+    cursor.close()
+    symbols_list = []
+    for symbol in db_result:
+        symbols_list.append(symbol)
+    return symbols_list
 
