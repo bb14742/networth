@@ -4,3 +4,5 @@ DATABASE_PW_KEY = 'db_pw'
 
 CONFIG_INI_SECTION_INVESTMENT = 'investments'
 CONFIG_INI_INVESTMENT_KEY_STOCK_SYMBOLS = 'StockSymbols'
+
+INVEST_DB_CREDS_FILE = './db_creds.txt'
