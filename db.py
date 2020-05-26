@@ -32,14 +32,33 @@ def get_db_connection(db_host, db_db, db_id, db_pw):
         raise
     
 
-def get_symbols(db_connection):
+def get_symbols_db(db_connection):
+    try:
+        cursor = db_connection.cursor(prepared=True)
+        sql_select_query = """SELECT symbol_nm from invest.symbols"""
+        cursor.execute(sql_select_query)
+        db_result = cursor.fetchall()
+        cursor.close()
+    except Exception as error:
+        print(f'Unexpected error in get_symbols_db(): {error}')
+        raise Exception
+    symbols_list = []
+    for symbol in db_result:
+        symbols_list.append(symbol[0])
+    return symbols_list
+
+def get_db_quotes(db_connection, symbol):
     cursor = db_connection.cursor(prepared=True)
-    sql_select_query = """ SELECT symbol_nm from invest.symbols"""
-    cursor.execute(sql_select_query)
+    sql_select_query = """ select q.symbol_id, q.price, q.stock_dt from invest.quotes q join invest.symbols s on (s.id = q.symbol_id) where s.symbol_nm = %s order by q.stock_dt"""
+    query_tuple = (symbol,)
+    cursor.execute(sql_select_query, query_tuple)
     db_result = cursor.fetchall()
     cursor.close()
     symbols_list = []
     for symbol in db_result:
-        symbols_list.append(symbol)
+        symbol_row = []
+        symbol_row.append(symbol[1])
+        symbol_row.append(symbol[2].isoformat())
+        symbols_list.append(symbol_row)
     return symbols_list
 
