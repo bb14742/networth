@@ -49,7 +49,7 @@ def get_symbols_db(db_connection):
 
 def get_db_quotes(db_connection, symbol):
     cursor = db_connection.cursor(prepared=True)
-    sql_select_query = """ select q.symbol_id, q.price, q.stock_dt from invest.quotes q join invest.symbols s on (s.id = q.symbol_id) where s.symbol_nm = %s order by q.stock_dt"""
+    sql_select_query = """ select q.symbol_id, q.price, q.stock_dt from invest.quotes q join invest.symbols s on (s.id = q.symbol_id) where s.symbol_nm = %s order by q.stock_dt desc"""
     query_tuple = (symbol,)
     cursor.execute(sql_select_query, query_tuple)
     db_result = cursor.fetchall()

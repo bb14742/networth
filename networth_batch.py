@@ -46,8 +46,30 @@ def update_quotes():
     for symbol in db_symbols_list:
         quotes = get_quotes(symbol)
         db_quotes = db.get_db_quotes(db_connection, symbol)
-        print(quotes)
+        db_quote_iter = 0
+        for q in quotes:
+            if db_quote_iter < len(db_quotes):
+                if datetime.strptime(q[1], '%Y-%m-%d').date() > datetime.strptime(db_quotes[db_quote_iter][1], '%Y-%m-%d').date():
+                    perform_api_insert = True
+                else:
+                    perform_api_insert = False
+            else:
+                perform_api_insert = True
+            if perform_api_insert:
+                if db_quote_iter < len(db_quotes):
+                    print(f'Insert API quote {q[1]}, {db_quotes[db_quote_iter][1]}')
+                else:
+                    print(f'Insert API quote {q[1]}')
+            else:
+                if db_quote_iter < len(db_quotes):
+                    print(f'Do not perform API insert: {q[1]}, {db_quotes[db_quote_iter][1]}')
+                else:
+                    print(f'Do not perform API insert: {q[1]}')
+                db_quote_iter += 1
+        print(f'quotes[0]: {quotes[0]}, db_quotes[0]: {db_quotes[0]}')
     print(f'{db_symbols_list}')
+
+    db_connection.close()
 
 if __name__ == '__main__':
     update_quotes()
